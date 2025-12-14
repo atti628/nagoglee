@@ -1,22 +1,33 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+interface Props {
+  title: string;
+}
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{title} | Nagogree</title>
+    <meta name="viewport" content="width=device-width" />
+  </head>
+  <body>
+    <header style="background: #333; color: white; padding: 1rem;">
+      <nav>
+        <a href="/" style="color: white; margin-right: 15px;">ホーム</a>
+        <a href="/about" style="color: white;">部活紹介</a>
+      </nav>
+    </header>
+
+    <main style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
+      <slot />
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; border-top: 1px 
+solid #ccc;">
+      &copy; 2025 Nagogree
+    </footer>
+  </body>
+</html>
