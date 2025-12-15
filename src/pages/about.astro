@@ -72,51 +72,91 @@ const pageInfo = {
     </div>
   </div>
 </Layout>
-
 <style is:global>
-  /* rich-textの中にあるテーブルのデザイン */
+  /* --------------------------------------------------
+     PC・スマホ共通の設定
+  -------------------------------------------------- */
+  
+  /* rich-textの基本設定 */
+  .rich-text p { margin-bottom: 1.5em; line-height: 1.8; }
+  
+  /* ★追加：表の中にあるpタグの余白はゼロにする（これが空白の原因です！） */
+  .rich-text table p {
+      margin-bottom: 0;
+  }
+  
+  /* テーブル全体の基本リセット */
   .rich-text table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1em 0;
+    margin: 2em 0;
+    font-size: 1rem;
   }
-  
-  /* 全てのセル */
+
+  /* セルの共通設定 */
   .rich-text th, 
   .rich-text td {
-    border: 1px solid #DDCBB4;
-    padding: 1rem;
+    border: 1px solid #DDCBB4; /* 枠線 */
+    padding: 1.2em;            /* 余白 */
     text-align: left;
+    vertical-align: top;
   }
 
-  /* 表の「1列目」を強制的に緑・太字にする設定 */
-  .rich-text th,
-  .rich-text tr td:first-child {
-    background-color: #FDFBF7;
-    color: #228B22;
-    font-weight: 900;
-    white-space: nowrap;
-    width: 30%;
-  }
-
-  /* スマホ調整 */
-  @media (max-width: 640px) {
-    .rich-text th, 
-    .rich-text td {
-      display: block;
-      width: 100%;
+  /* --- PC表示 (640px以上) の設定 --- */
+  @media (min-width: 641px) {
+    /* 左側の項目（見出し）のデザイン */
+    .rich-text th,
+    .rich-text tr td:first-child {
+      background-color: #FDFBF7; /* アイボリー背景 */
+      color: #228B22;            /* 緑文字 */
+      font-weight: 900;          /* 太字 */
+      white-space: nowrap;       /* 改行させない */
+      width: 30%;                /* 幅を30%に固定 */
+      min-width: 160px;          /* 最低幅を確保 */
     }
   }
 
-  /* 箇条書きデザイン */
-  .rich-text ul {
-    list-style-type: disc;
-    padding-left: 1.5em;
-    margin: 1em 0;
+  /* --- スマホ表示 (640px以下) の設定 --- */
+  @media (max-width: 640px) {
+    /* テーブルの構造をブロック崩しのように解除する */
+    .rich-text table, 
+    .rich-text tbody, 
+    .rich-text tr, 
+    .rich-text th, 
+    .rich-text td {
+      display: block; 
+      width: 100% !important; /* 幅を強制的に100%にする */
+      box-sizing: border-box; /* パディングを含めて100%にする */
+      border: none;           /* 一旦枠線を消す */
+    }
+
+    /* 「行(tr)」を一つのカードとしてデザインする */
+    .rich-text tr {
+      margin-bottom: 1.5rem;      /* 下のカードとの間隔 */
+      border: 2px solid #DDCBB4;  /* 外枠をつける */
+      border-radius: 4px;         /* 角を少し丸く */
+      overflow: hidden;           /* 角丸からはみ出さないように */
+    }
+
+    /* 見出し部分 (th) */
+    .rich-text th,
+    .rich-text tr td:first-child {
+      background-color: #FDFBF7;
+      color: #228B22;
+      font-weight: bold;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid #DDCBB4; /* 下に線を入れて区切る */
+    }
+
+    /* 内容部分 (td) */
+    .rich-text td,
+    .rich-text tr td:last-child {
+      background-color: #fff;
+      padding: 1rem;
+    }
   }
-  .rich-text ol {
-    list-style-type: decimal;
-    padding-left: 1.5em;
-    margin: 1em 0;
-  }
+
+  /* 箇条書きリスト */
+  .rich-text ul { list-style-type: disc; padding-left: 1.5em; margin: 1em 0; }
+  .rich-text ol { list-style-type: decimal; padding-left: 1.5em; margin: 1em 0; }
 </style>
