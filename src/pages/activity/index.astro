@@ -1,0 +1,70 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getActivities } from "../../library/microcms";
+
+// MicroCMSから記事を取得
+const response = await getActivities({ limit: 100 });
+const activities = response.contents;
+
+// ページヘッダー設定
+const pageInfo = {
+  title: "ACTIVITY",
+  subtitle: "活動報告",
+  bgImage: "https://placehold.jp/3d4070/ffffff/1920x1080.png?text=ACTIVITY%20IMAGE",
+};
+---
+
+<Layout title={`${pageInfo.subtitle} | NagoGree`}>
+
+  <div class="relative h-[40vh] min-h-[300px] flex items-center justify-center bg-cover bg-center" 
+       style={`background-image: url('${pageInfo.bgImage}');`}>
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative z-10 text-center text-white">
+      <h1 class="text-5xl md:text-6xl font-black tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] mb-2">
+        {pageInfo.title}
+      </h1>
+      <p class="text-lg font-bold tracking-[0.2em] opacity-90">{pageInfo.subtitle}</p>
+    </div>
+  </div>
+
+  <div class="bg-[#FDFBF7] py-20 px-4 text-black">
+    <div class="max-w-5xl mx-auto">
+
+      {activities.length === 0 ? (
+        <p class="text-center text-gray-500">現在、記事はありません。</p>
+      ) : (
+        /* ブログカードのグリッド表示 (PCで3列) */
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {activities.map((post) => (
+            <a href={`/activity/${post.id}`} class="bg-white border border-[#DDCBB4] rounded-sm overflow-hidden shadow-sm group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+              
+              <div class="aspect-[16/9] bg-gray-200 overflow-hidden relative">
+                {post.thumbnail ? (
+                  <img src={post.thumbnail.url} alt={post.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                ) : (
+                  <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">NO IMAGE</div>
+                )}
+              </div>
+
+              <div class="p-6 flex flex-col flex-grow">
+                <time class="text-xs text-gray-500 mb-2 block font-mono">
+                  {new Date(post.publishedAt || post.createdAt).toLocaleDateString("ja-JP")}
+                </time>
+                
+                <h2 class="text-lg font-bold leading-snug text-gray-800 group-hover:text-[#228B22] transition-colors mb-4 line-clamp-2">
+                  {post.title}
+                </h2>
+                
+                <div class="mt-auto text-right">
+                  <span class="text-xs text-[#228B22] font-bold border-b border-[#228B22] pb-0.5">READ MORE</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+
+    </div>
+  </div>
+
+</Layout>

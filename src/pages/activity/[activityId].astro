@@ -1,0 +1,78 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getActivities } from "../../library/microcms";
+
+// 1. 静的パス生成
+export async function getStaticPaths() {
+  const response = await getActivities({ limit: 100 });
+  return response.contents.map((post) => ({
+    params: { activityId: post.id },
+    props: { post },
+  }));
+}
+
+// 2. データ受け取り
+const { post } = Astro.props;
+
+// ヘッダー設定
+const pageInfo = {
+  title: "ACTIVITY",
+  subtitle: "活動報告",
+  bgImage: "https://placehold.jp/3d4070/ffffff/1920x1080.png?text=ACTIVITY%20IMAGE",
+};
+---
+
+<Layout title={`${post.title} | NagoGree`}>
+
+  <div class="relative h-[40vh] min-h-[300px] flex items-center justify-center bg-cover bg-center" 
+       style={`background-image: url('${pageInfo.bgImage}');`}>
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative z-10 text-center text-white">
+      <h1 class="text-5xl md:text-6xl font-black tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] mb-2">
+        {pageInfo.title}
+      </h1>
+      <p class="text-lg font-bold tracking-[0.2em] opacity-90">{pageInfo.subtitle}</p>
+    </div>
+  </div>
+
+  <div class="bg-[#FDFBF7] py-20 px-4 text-black">
+    <div class="max-w-3xl mx-auto bg-white p-8 md:p-16 shadow-lg border border-[#DDCBB4] rounded-sm">
+      
+      <div class="mb-10 text-center border-b border-[#DDCBB4] pb-8">
+        <time class="text-sm text-gray-500 font-mono block mb-4">
+          {new Date(post.publishedAt || post.createdAt).toLocaleDateString("ja-JP", { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+        <h1 class="text-2xl md:text-3xl font-black leading-tight text-black">
+          {post.title}
+        </h1>
+      </div>
+
+      {post.thumbnail && (
+        <div class="mb-12">
+          <img src={post.thumbnail.url} alt={post.title} class="w-full h-auto shadow-sm" />
+        </div>
+      )}
+
+      <div class="rich-text text-gray-800 leading-loose" set:html={post.content} />
+
+      <div class="mt-16 text-center border-t border-[#DDCBB4] pt-12">
+        <a href="/activity" class="inline-block px-8 py-3 border border-[#228B22] text-[#228B22] font-bold hover:bg-[#228B22] hover:text-white transition-colors duration-300 tracking-widest rounded-sm">
+          一覧に戻る
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</Layout>
+
+<style is:global>
+  .rich-text p { margin-bottom: 1.5em; line-height: 1.8; }
+  .rich-text h2 { font-size: 1.5em; font-weight: bold; color: #228B22; margin-top: 2em; margin-bottom: 1em; border-bottom: 1px solid #DDCBB4; }
+  .rich-text h3 { font-size: 1.25em; font-weight: bold; margin-top: 1.5em; margin-bottom: 0.5em; }
+  .rich-text ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1.5em; }
+  .rich-text ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1.5em; }
+  .rich-text img { max-width: 100%; height: auto; margin: 1em 0; }
+  .rich-text a { color: #228B22; text-decoration: underline; }
+  .rich-text blockquote { border-left: 4px solid #DDCBB4; padding-left: 1em; color: #666; font-style: italic; }
+</style>

@@ -1,0 +1,73 @@
+---
+// ==============================================
+// Header.astro
+// ==============================================
+
+const menuItems = [
+  { name: "HOME", href: "/" },
+  { name: "ABOUT", href: "/about" },
+  // { name: "MEMBER", href: "/member" },
+];
+---
+
+<header class="fixed top-0 w-full z-50 bg-[#FDFBF7] border-b-4 border-[#DDCBB4] shadow-sm">
+  
+  <div class="max-w-4xl mx-auto flex justify-between items-center px-6 py-4">
+
+    <a href="/" class="text-center hover:opacity-70 transition-opacity">
+      <div class="text-[#228B22] font-black text-2xl leading-none tracking-[0.2em]">
+        NAGO
+      </div>
+      <div class="text-[#228B22] font-black text-2xl leading-none tracking-[0.2em]">
+        GREE
+      </div>
+    </a>
+
+    <button id="menu-toggle-btn" class="text-black p-2 focus:outline-none hover:bg-black/10 rounded-md transition-colors" aria-label="メニューを開く">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+  </div>
+
+  <div id="mobile-menu" class="fixed inset-0 z-40 bg-[#FDFBF7] flex flex-col items-center justify-center transition-all duration-300 ease-in-out translate-x-full opacity-0 pointer-events-none">
+    
+    <button id="menu-close-btn" class="absolute top-6 right-6 p-3 text-black hover:bg-black/10 rounded-full transition-colors" aria-label="メニューを閉じる">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <nav class="w-full max-w-xs flex flex-col divide-y-2 divide-[#DDCBB4] border-t-2 border-b-2 border-[#DDCBB4]">
+      {menuItems.map((item) => (
+        <a href={item.href} class="menu-link block w-full text-center py-6 text-2xl font-bold text-black hover:text-[#228B22] hover:bg-black/5 transition-colors">
+          {item.name}
+        </a>
+      ))}
+    </nav>
+
+  </div>
+</header>
+
+<script>
+  const toggleBtn = document.getElementById('menu-toggle-btn');
+  const closeBtn = document.getElementById('menu-close-btn');
+  const menu = document.getElementById('mobile-menu');
+  const links = document.querySelectorAll('.menu-link');
+
+  const toggleMenu = () => {
+    if (menu) {
+      menu.classList.toggle('translate-x-full');
+      menu.classList.toggle('opacity-0');
+      menu.classList.toggle('pointer-events-none');
+    }
+  };
+
+  if (toggleBtn) toggleBtn.addEventListener('click', toggleMenu);
+  if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
+
+  links.forEach(link => {
+    link.addEventListener('click', toggleMenu);
+  });
+</script>

@@ -1,0 +1,145 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getConcerts } from "../library/microcms";
+
+// MicroCMSから全演奏会データを取得
+const response = await getConcerts({ limit: 100 });
+const allConcerts = response.contents;
+
+// 現在時刻を取得
+const today = new Date().toISOString();
+
+// 自動振り分け処理
+// 未来の演奏会 (日付が今日より後)
+const upcomingConcerts = allConcerts.filter(concert => concert.date >= today).reverse();
+// 過去の演奏会 (日付が今日より前)
+const pastConcerts = allConcerts.filter(concert => concert.date < today);
+
+// ページヘッダー設定
+const pageInfo = {
+  title: "CONCERT",
+  subtitle: "演奏会情報",
+  bgImage: "https://placehold.jp/3d4070/ffffff/1920x1080.png?text=CONCERT%20IMAGE",
+};
+---
+
+<Layout title={`${pageInfo.subtitle} | NagoGree`}>
+
+  <div class="relative h-[40vh] min-h-[300px] flex items-center justify-center bg-cover bg-center" 
+       style={`background-image: url('${pageInfo.bgImage}');`}>
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative z-10 text-center text-white">
+      <h1 class="text-5xl md:text-6xl font-black tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] mb-2">
+        {pageInfo.title}
+      </h1>
+      <p class="text-lg font-bold tracking-[0.2em] opacity-90">{pageInfo.subtitle}</p>
+    </div>
+  </div>
+
+  <div class="bg-[#FDFBF7] py-20 px-4 text-black">
+    <div class="max-w-4xl mx-auto space-y-24">
+
+      <section class="animate-on-scroll opacity-0 translate-y-10 transition-all duration-1000">
+        <h2 class="text-[#228B22] text-3xl font-black tracking-widest mb-12 text-center border-b-2 border-[#DDCBB4] inline-block pb-2 mx-auto table">
+          UPCOMING
+          <span class="block text-sm text-gray-500 font-normal mt-1 tracking-normal">今後の演奏会</span>
+        </h2>
+
+        {upcomingConcerts.length === 0 ? (
+          <div class="text-center py-10 bg-white border border-[#DDCBB4] rounded-sm text-gray-500">
+            <p>現在、予定されている演奏会はありません。<br>次回のお知らせをお待ちください。</p>
+          </div>
+        ) : (
+          <div class="space-y-12">
+            {upcomingConcerts.map((concert) => (
+              <div class="bg-white shadow-lg border border-[#DDCBB4] rounded-sm overflow-hidden">
+                
+                <div class="p-6 md:p-10 pb-0 text-center">
+                  <span class="bg-[#228B22] text-white text-xs font-bold px-4 py-1 rounded-full tracking-wider inline-block mb-4">
+                    COMING SOON
+                  </span>
+                  <h3 class="text-3xl md:text-4xl font-black leading-tight text-black mb-4">
+                    {concert.title}
+                  </h3>
+                  <p class="text-[#228B22] font-bold text-xl md:text-2xl tracking-widest">
+                    {new Date(concert.date).toLocaleDateString("ja-JP", { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' })}
+                  </p>
+                </div>
+
+                {concert.image && (
+                  <div class="w-full bg-gray-100 mt-8">
+                    <img src={concert.image.url} alt={concert.title} class="w-full h-auto max-h-[600px] object-contain mx-auto" />
+                  </div>
+                )}
+
+                <div class="p-6 md:p-10 pt-8">
+                  <div class="rich-text text-gray-800 leading-loose max-w-3xl mx-auto" set:html={concert.content} />
+                  
+                  {concert.ticketUrl && (
+                    <div class="mt-10 text-center">
+                      <a href={concert.ticketUrl} target="_blank" rel="noopener noreferrer" class="inline-block bg-[#228B22] text-white font-bold py-4 px-12 shadow-md hover:bg-[#1a6b1a] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest rounded-sm">
+                        チケットはこちらから
+                      </a>
+                      <p class="text-xs text-gray-500 mt-2">※ 外部サイトへ移動します</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section class="animate-on-scroll opacity-0 translate-y-10 transition-all duration-1000">
+        <h2 class="text-[#228B22] text-3xl font-black tracking-widest mb-12 text-center border-b-2 border-[#DDCBB4] inline-block pb-2 mx-auto table">
+          HISTORY
+          <span class="block text-sm text-gray-500 font-normal mt-1 tracking-normal">過去の演奏会</span>
+        </h2>
+
+        {pastConcerts.length === 0 ? (
+          <p class="text-center text-gray-500">過去の履歴はありません。</p>
+        ) : (
+          /* ★ここがグリッド表示の肝です */
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {pastConcerts.map((concert) => (
+              <a href={`/concert/${concert.id}`} class="block bg-white shadow-sm border border-[#DDCBB4] rounded-sm overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                
+                <div class="aspect-[16/9] overflow-hidden bg-gray-200 relative">
+                  {concert.image ? (
+                    <img src={concert.image.url} alt={concert.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">NO IMAGE</div>
+                  )}
+                  <div class="absolute top-2 right-2 bg-gray-500 text-white text-[10px] px-2 py-1 rounded-sm">
+                    FINISHED
+                  </div>
+                </div>
+                
+                <div class="p-4">
+                  <div class="text-xs text-gray-500 mb-1">
+                    {new Date(concert.date).toLocaleDateString("ja-JP")}
+                  </div>
+                  <h3 class="font-bold text-lg leading-tight mb-2 group-hover:text-[#228B22] transition-colors line-clamp-2">
+                    {concert.title}
+                  </h3>
+                  <p class="text-xs text-[#228B22] text-right mt-2 font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                    詳細を見る →
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+      </section>
+
+    </div>
+  </div>
+
+</Layout>
+
+<style is:global>
+  .rich-text table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+  .rich-text th, .rich-text td { border: 1px solid #DDCBB4; padding: 0.5rem; text-align: left; }
+  .rich-text th { background-color: #FDFBF7; color: #228B22; font-weight: bold; }
+  .rich-text ul { list-style-type: disc; padding-left: 1.5em; }
+</style>
