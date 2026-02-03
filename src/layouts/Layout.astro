@@ -12,13 +12,14 @@ interface Props {
 const { 
   title, 
   // デフォルトの説明文
-  description = "名古屋大学グリークラブ(なごぐり)は、名古屋大学を拠点に活動する男声合唱団です。初心者歓迎！見学・体験はいつでも募集中です。",
+  description = "名古屋大学グリークラブ(なごぐり)は、名古屋大学を拠点に活動する男声合唱団(サークル)です。初心者歓迎！見学・体験はいつでも募集中です。",
   // デフォルトのOGP画像
   image = "https://placehold.jp/3d4070/ffffff/1200x630.png?text=NagoGlee"
 } = Astro.props;
 
 // 本番URL（必要に応じて書き換えてください）
 const siteUrl = "https://nagoglee.pages.dev";
+const siteName = "名古屋大学グリークラブ";
 ---
 
 <!doctype html>
@@ -28,7 +29,7 @@ const siteUrl = "https://nagoglee.pages.dev";
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="google-site-verification" content="FnYOwgGQ-zy4tL3CIcAAqhKCQphoOp4aFFgpl1YNmzs" />
+    <meta name="google-site-verification" content="X6jn31A8urojugFdxHxj1S7m6WBmi-yTachsy1TxtqY" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
